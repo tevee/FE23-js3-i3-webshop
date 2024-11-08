@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import webshopReducer from '../redux/webshopSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    webshop: webshopReducer
   },
 });
 
