@@ -36,7 +36,7 @@ export const webshopSlice = createSlice({
         addToCart: (state, action: PayloadAction<string>) => {
             const existingCartItem = state.cart.find((item) => item.id === action.payload);
             if(existingCartItem) existingCartItem.quantity += 1;
-            else state.cart.push({id: action.payload, quantity: 1})
+            else state.cart.push({id: action.payload, quantity: 1});
             console.log(JSON.parse(JSON.stringify(state.cart)));  
         }
     }
@@ -47,5 +47,6 @@ export const {setSearchInput, filterProducts, addToCart} = webshopSlice.actions;
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
 export const selectFilteredProducts = (state: RootState) => state.webshop.filteredProducts;
 export const selectCart = (state: RootState) => state.webshop.cart;
+export const selectProducts = (state: RootState) => state.webshop.products;
 
 export default webshopSlice.reducer;
