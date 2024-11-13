@@ -1,17 +1,5 @@
 import { faker } from '@faker-js/faker';
-
-export interface ClothingProduct {
-    id: string;
-    name: string;
-    category: string;
-    size: string;
-    price: string;
-    valuta: string;
-    description: string;
-    clothingType: string;
-    imgUrl: string;
-    quantity: number;
-}
+import { ClothingProduct } from '../types/types';
 
 function createClothingProduct(): ClothingProduct {
     const categories: string[] = ['Men', 'Women', 'Unisex'];

@@ -1,20 +1,7 @@
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
-import productsDB, { ClothingProduct } from '../db/fakerDB';
-
-interface WebshopState {
-    cart: Cart[];
-    products: ClothingProduct[];
-    filteredProducts: ClothingProduct[];
-    searchInput: string;
-    isProductModalOpen: boolean;
-    focusedProduct: ClothingProduct | null;
-}
-
-interface Cart {
-    id: string;
-    quantity: number;
-}
+import productsDB from '../db/fakerDB';
+import {ClothingProduct, WebshopState, CartItem, CartItemSetQuantity, CartTotalPrice} from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
@@ -23,25 +10,6 @@ const initialState: WebshopState = {
     searchInput: '',
     isProductModalOpen: false,
     focusedProduct: null
-}
-
-interface CartItem {
-    id: string;
-    name: string;
-    price: number;
-    valuta: string;
-    imgUrl: string;
-    quantity: number;
-}
-
-interface CartItemSetQuantity {
-    id: string;
-    value: number;
-}
-
-interface CartTotalPrice {
-    totalPrice: number;
-    valuta: string;
 }
 
 export const webshopSlice = createSlice({

@@ -1,7 +1,7 @@
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectFilteredProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct } from "../redux/webshopSlice";
 import ProductModal from './ProductModal';
-import { ClothingProduct } from '../db/fakerDB';
+import { ClothingProduct } from '../types/types';
 
 export default function SearchResult():JSX.Element {
 
