@@ -1,10 +1,17 @@
-import { useAppSelector } from "../app/hooks";
-import { selectCartItems, selectCartSummary } from "../redux/webshopSlice";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { selectCartItems, selectCartSummary, setCartItemQuantity } from "../redux/webshopSlice";
 
 export default function ShoppingCart():JSX.Element {
 
+    const dispatch = useAppDispatch();
     const cartItems = useAppSelector(selectCartItems);
     const {totalPrice, valuta} = useAppSelector(selectCartSummary);
+
+    const setQuantity = (e:React.MouseEvent<HTMLButtonElement>, id:string): void => {
+        e.preventDefault(); 
+        const value:number = Number(e.currentTarget.dataset.value);
+        dispatch(setCartItemQuantity({id, value}));
+    }
 
     return (
         <div className="cart">
@@ -16,8 +23,22 @@ export default function ShoppingCart():JSX.Element {
                     </figure>
                     <div className="cart-item-body">
                         <h3>{item.name}</h3>
-                        <span>Quantity: {item.quantity}</span>
-                        <span>Price Total: {item.price * item.quantity} {item.valuta}</span>
+                        <span>{item.price} kr</span>
+                        <div className="cart-item-body-quantity">
+                            <button 
+                                onClick={(e) => setQuantity(e, item.id)}
+                                data-value={-1}
+                                data-quantity={item.quantity}
+                                disabled={item.quantity <= 1}
+                                >
+                                <i className="bi bi-dash-lg"></i>
+                            </button>
+                            <span>{item.quantity}</span>
+                            <button onClick={(e) => setQuantity(e, item.id)} data-value={1}>
+                                <i className="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+                        <span>Subtotal: {item.price * item.quantity} {item.valuta}</span>
                     </div>
                     <div className="cart-item-body-right">
                         <button className="cart-item-btn-remove">

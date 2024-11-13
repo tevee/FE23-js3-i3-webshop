@@ -113,6 +113,26 @@ figure {
   padding: 0.5rem;
 }
 
+.cart-item-body-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f4f4;
+  border-radius: 999px;
+  height: 2.75rem;
+  width: 8.25rem;
+  margin-bottom: 1rem;
+}
+
+.cart-item-body-quantity button {
+  border: none;
+  padding: 10px 12px;
+}
+
+.cart-item-body-quantity button i {
+  font-size: 1rem;
+}
+
 .cart-item-body-right {
   width: 10%;
   display: flex;

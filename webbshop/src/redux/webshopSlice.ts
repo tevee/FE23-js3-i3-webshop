@@ -26,11 +26,17 @@ const initialState: WebshopState = {
 }
 
 interface CartItem {
+    id: string;
     name: string;
     price: number;
     valuta: string;
     imgUrl: string;
     quantity: number;
+}
+
+interface CartItemSetQuantity {
+    id: string;
+    value: number;
 }
 
 interface CartTotalPrice {
@@ -45,9 +51,8 @@ export const webshopSlice = createSlice({
         setSearchInput: (state, action: PayloadAction<string>) => {state.searchInput = action.payload},
         filterProducts: (state) => {
             if(state.searchInput !== '') {
-                state.filteredProducts = productsDB.filter(product => product.name.toLowerCase().includes(state.searchInput.toLowerCase()))
+                state.filteredProducts = productsDB.filter(product => product.name.toLowerCase().includes(state.searchInput.toLowerCase()));
                 state.searchInput = '';
-                console.log(state.filteredProducts);
             }
         },
         addToCart: (state, action: PayloadAction<string>) => {
@@ -58,18 +63,19 @@ export const webshopSlice = createSlice({
         },
         setIsProductModalOpen: (state, action: PayloadAction<boolean>) => {
             state.isProductModalOpen = action.payload
-            console.log(state.isProductModalOpen);
         },
         setFocusedProduct: (state, action: PayloadAction<ClothingProduct>) => {
             state.focusedProduct = action.payload;
-            console.log(state.focusedProduct);
-            
+        },
+        setCartItemQuantity: (state, action: PayloadAction<CartItemSetQuantity>) => {
+            const cartItem = state.cart.find((item) => item.id === action.payload.id);
+            if(cartItem) cartItem.quantity = Math.max(1, cartItem.quantity + action.payload.value);
         }
     }
 });
 
 // Reducer actions
-export const {setSearchInput, filterProducts, addToCart, setIsProductModalOpen, setFocusedProduct} = webshopSlice.actions;
+export const {setSearchInput, filterProducts, addToCart, setIsProductModalOpen, setFocusedProduct, setCartItemQuantity} = webshopSlice.actions;
 
 // Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
@@ -91,6 +97,7 @@ export const selectCartItems = createSelector(
         return cart.map(cartItem => {
             if(!itemMap[cartItem.id]) return null;
             return {
+                id: itemMap[cartItem.id].id,
                 name: itemMap[cartItem.id].name,
                 price: Number(itemMap[cartItem.id].price),
                 valuta: itemMap[cartItem.id].valuta,
