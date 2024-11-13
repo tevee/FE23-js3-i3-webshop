@@ -1,3 +1,9 @@
+/* 
+    SearchResult Component
+    Render product result of the input from the searchbar.
+    Handles adding product to cart, updating product information for modal and displaying the modal.
+*/
+
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectFilteredProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct } from "../redux/webshopSlice";
 import ProductModal from './ProductModal';

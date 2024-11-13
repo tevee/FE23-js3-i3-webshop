@@ -1,3 +1,7 @@
+/* 
+  Redux store
+*/
+
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import webshopReducer from '../redux/webshopSlice';
 

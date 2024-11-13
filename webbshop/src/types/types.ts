@@ -1,3 +1,7 @@
+/* 
+  Types needed for TypeScript
+*/
+
 interface ClothingProduct {
   id: string;
   name: string;

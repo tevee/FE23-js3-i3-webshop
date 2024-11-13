@@ -1,3 +1,8 @@
+/* 
+    Searchbar Component
+    Handles the search state
+*/
+
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectSearchInput, setSearchInput, filterProducts } from '../redux/webshopSlice';
 

@@ -1,3 +1,11 @@
+/* 
+  ProductModal Component
+  Responsible for rendering Bootstraps modal
+  Using redux to manually handle closing the modal with a boolean (true/false).
+  Opening the modal handles in the SearchResult Component.
+  Modal functionality is from Bootstraps own Javascript API.
+*/
+
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { selectIsProductModalOpen, setIsProductModalOpen, selectFocusedProduct } from "../redux/webshopSlice";
 import {useRef, useEffect, useCallback} from 'react';
@@ -10,11 +18,15 @@ export default function ProductModal():JSX.Element {
   const product = useAppSelector(selectFocusedProduct);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  // Memoize the function to ensure it doesn't change on every render
+  // Memoize the function to ensure it doesn't lose its reference
+  // Making sure inside the useEffect that the event listener references correct function
+  // and cleans up the correct function
   const closeProductModal = useCallback(() => {
     dispatch(setIsProductModalOpen(false));
   }, [dispatch]);
 
+  // Make sure only one modal is created and let Bootstraps javascript API handle its own functionality
+  // The only thing we do is setting our modal state to either true/false when the modal is opened/closed
   useEffect(() => {
     const modalElement = modalRef.current;
     if(modalElement) {
@@ -27,7 +39,7 @@ export default function ProductModal():JSX.Element {
         modal.hide();
       }
 
-      // This is for updating isProductModalOpen state to false when closing modal with backdrop,
+      // Manually set isProductModalOpen state to false when closing modal with backdrop,
       // meaning clicking outside of the modal.
       modalElement.addEventListener('hidden.bs.modal', closeProductModal as EventListener);
       

@@ -1,3 +1,7 @@
+/* 
+    This is the Webshop component containing components that completes the webshop.
+*/
+
 import '../css/webshop.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';

@@ -1,3 +1,8 @@
+/* 
+    ShoppingCart Component
+    Handles updating quantity and removing cartItems.
+*/
+
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import { selectCartItems, selectCartSummary, setCartItemQuantity, removeCartItem } from "../redux/webshopSlice";
 
@@ -52,7 +57,14 @@ export default function ShoppingCart():JSX.Element {
                     </div>
               </div>
             ))}
-            <h3>Total Price: {totalPrice} {valuta}</h3>
+            {
+                cartItems.length > 0 
+                ? <div className="cart-total">
+                    <h3>Total Price:</h3>
+                    <h3>{totalPrice} {valuta}</h3>
+                </div>
+                : <h4>Cart is empty</h4>
+            }
         </div>
     )
 }

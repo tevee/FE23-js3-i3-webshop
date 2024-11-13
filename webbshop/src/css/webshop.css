@@ -229,4 +229,9 @@ header > h1 {
   .cart-item-body-right {
     padding-right: 1.2rem;
   }
+
+  .cart-total {
+    display: flex;
+    justify-content: space-between;
+  }
 }

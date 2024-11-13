@@ -1,3 +1,8 @@
+/*
+  Custom Hook automatically generated when creating redux-typescript template.
+  Giving type for useDispatch and useSelector.
+*/
+
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './store';
 

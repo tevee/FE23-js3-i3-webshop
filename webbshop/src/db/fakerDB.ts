@@ -13,7 +13,7 @@ function createClothingProduct(): ClothingProduct {
     const category: string = categories[Math.floor(Math.random() * categories.length)];
     const size: string = sizes[Math.floor(Math.random() * sizes.length)];
     const price: string = `${faker.commerce.price({min: 200, max: 1000, dec: 0})}`;
-    const valuta: string = 'SEK';
+    const valuta: string = 'kr';
     const description: string = `${faker.commerce.productAdjective()} and stylish, perfect for everyday wear. Made from high-quality fabric.`;
     const imgUrl: string = faker.image.urlLoremFlickr({ width: 600, height: 400, category: `${clothingType}` });
     const quantity = 1;

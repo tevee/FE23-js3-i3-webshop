@@ -1,3 +1,8 @@
+/* 
+    Webshop Slice
+    Handles the Webshop reducer
+*/
+
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
 import productsDB from '../db/fakerDB';
@@ -57,6 +62,10 @@ export const selectIsProductModalOpen = (state: RootState) => state.webshop.isPr
 export const selectFocusedProduct = (state: RootState) => state.webshop.focusedProduct;
 
 // Memoized selectors, derived data
+// Side note: 
+// Memoized selectors remembers the result of the selector
+// It keeps track of state changes and
+// It also recomputes data accord to dependency (state) changes
 export const selectCartItems = createSelector(
     [selectProducts, selectCart], 
     (productsDB, cart): CartItem[] => {
@@ -82,13 +91,13 @@ export const selectCartSummary = createSelector(
     [selectCartItems],
     (cartItems): CartTotalPrice => {
         if(!cartItems || cartItems.length === 0) {
-            return {totalPrice: 0, valuta: 'SEK'};
+            return {totalPrice: 0, valuta: 'kr'};
         }
 
         return cartItems.reduce<CartTotalPrice>((acc, item) => {
             acc.totalPrice += (item.price * item.quantity);
             return acc;
-        }, {totalPrice: 0, valuta: 'SEK'});
+        }, {totalPrice: 0, valuta: 'kr'});
     }
 );
 
