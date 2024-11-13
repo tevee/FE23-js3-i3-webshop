@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '../app/store';
 import productsDB, { ClothingProduct } from '../db/fakerDB';
 
@@ -19,6 +19,19 @@ const initialState: WebshopState = {
     products: productsDB,
     filteredProducts: [],
     searchInput: ''
+}
+
+interface CartItem {
+    name: string;
+    price: number;
+    valuta: string;
+    imgUrl: string;
+    quantity: number;
+}
+
+interface CartTotalPrice {
+    totalPrice: number;
+    valuta: string;
 }
 
 export const webshopSlice = createSlice({
@@ -44,9 +57,45 @@ export const webshopSlice = createSlice({
 
 export const {setSearchInput, filterProducts, addToCart} = webshopSlice.actions;
 
+// Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
 export const selectFilteredProducts = (state: RootState) => state.webshop.filteredProducts;
 export const selectCart = (state: RootState) => state.webshop.cart;
 export const selectProducts = (state: RootState) => state.webshop.products;
+
+// Memoized selectors, derived data
+export const selectCartItems = createSelector(
+    [selectProducts, selectCart], 
+    (productsDB, cart): CartItem[] => {
+        const itemMap = productsDB.reduce<{[key: string]: ClothingProduct}>((acc, item) => {
+            acc[item.id] = item;
+            return acc;
+        }, {})
+
+        return cart.map(cartItem => {
+            if(!itemMap[cartItem.id]) return null;
+            return {
+                name: itemMap[cartItem.id].name,
+                price: Number(itemMap[cartItem.id].price),
+                valuta: itemMap[cartItem.id].valuta,
+                imgUrl: itemMap[cartItem.id].imgUrl,
+                quantity: cartItem.quantity
+            }
+        }) as CartItem[];
+});
+
+export const selectCartSummary = createSelector(
+    [selectCartItems],
+    (cartItems): CartTotalPrice => {
+        if(!cartItems || cartItems.length === 0) {
+            return {totalPrice: 0, valuta: 'SEK'};
+        }
+
+        return cartItems.reduce<CartTotalPrice>((acc, item) => {
+            acc.totalPrice += (item.price * item.quantity);
+            return acc;
+        }, {totalPrice: 0, valuta: 'SEK'});
+    }
+);
 
 export default webshopSlice.reducer;

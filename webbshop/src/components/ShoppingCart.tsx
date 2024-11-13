@@ -1,24 +1,32 @@
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { selectCart, selectProducts } from "../redux/webshopSlice";
-import { ClothingProduct } from "../db/fakerDB";
+import { useAppSelector } from "../app/hooks";
+import { selectCartItems, selectCartSummary } from "../redux/webshopSlice";
 
 export default function ShoppingCart():JSX.Element {
 
-    const dispatch = useAppDispatch();
-    const cart = useAppSelector(selectCart);
-    const productsDB = useAppSelector(selectProducts);
-
-    const getCartItems = () => {
-        const cartItems = cart.map((product, i) => product.id === productsDB[i].id)
-        console.log(cartItems);
-        return cartItems
-    }
+    const cartItems = useAppSelector(selectCartItems);
+    const {totalPrice, valuta} = useAppSelector(selectCartSummary);
 
     return (
         <div className="cart">
             <h2>Shopping Cart</h2>
-            {cart && getCartItems()}
-            <h3>Total Price: 0 SEK</h3>
+            {cartItems.map((item, i) => (
+                <div key={i} className="cart-item border">
+                    <figure className="cart-item-figure">
+                        <img src={item.imgUrl}/>
+                    </figure>
+                    <div className="cart-item-body">
+                        <h3>{item.name}</h3>
+                        <span>Quantity: {item.quantity}</span>
+                        <span>Price Total: {item.price * item.quantity} {item.valuta}</span>
+                    </div>
+                    <div className="cart-item-body-right">
+                        <button className="cart-item-btn-remove">
+                            <i className="bi bi-trash3"></i>
+                        </button>
+                    </div>
+              </div>
+            ))}
+            <h3>Total Price: {totalPrice} {valuta}</h3>
         </div>
     )
 }

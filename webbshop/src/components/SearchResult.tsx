@@ -15,13 +15,15 @@ export default function SearchResult():JSX.Element {
         <div className="search-result">
             <h2>{filteredProducts.length > 0 ? 'Search Result:' : 'No Results'}</h2>
             {filteredProducts.map((product, i) => (
-                <div key={i} id={product.id} className="product-card">
+                <div key={i} id={product.id} className="product-card border">
                     <figure className="product-img">
                         <img src={product.imgUrl}/>
                     </figure>
-                    <h3>{product.name}</h3>
-                    <a>Mer Information</a>
-                    <span className="product-price">{`${product.price} ${product.valuta}`}</span>
+                    <div className="product-card-body">
+                        <h3>{product.name}</h3>
+                        <a>Mer Information</a>
+                        <span className="product-price">{`${product.price} ${product.valuta}`}</span>
+                    </div>
                     <button onClick={(e) => handleAddToCart(e, product.id)}>Add to cart</button>
                 </div>
             ))}
