@@ -4,15 +4,15 @@
     box-sizing: border-box;
 }
 
-a, button {
-  cursor: pointer;
-}
-
 button {
   background: none;
   border: 1px solid black;
   border-radius: 4px;
   padding: 0.5rem;
+}
+
+a, button {
+  cursor: pointer;
 }
 
 figure {
@@ -75,6 +75,13 @@ figure {
   padding: 1rem;
 }
 
+.product-card-body > button {
+  border: none;
+  padding: 0;
+  text-decoration: underline;
+  align-self: flex-start;
+}
+
 .product-price {
   margin: 1.5rem 0 0;
 }
@@ -120,4 +127,14 @@ figure {
 
 .cart-item-btn-remove > i {
   font-size: 1.5rem;
+}
+
+/* Modal */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content > .modal-footer {
+  justify-content: space-between;
 }

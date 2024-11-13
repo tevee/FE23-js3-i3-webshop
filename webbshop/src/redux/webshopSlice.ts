@@ -7,6 +7,8 @@ interface WebshopState {
     products: ClothingProduct[];
     filteredProducts: ClothingProduct[];
     searchInput: string;
+    isProductModalOpen: boolean;
+    focusedProduct: ClothingProduct | null;
 }
 
 type Cart = {
@@ -18,7 +20,9 @@ const initialState: WebshopState = {
     cart: [],
     products: productsDB,
     filteredProducts: [],
-    searchInput: ''
+    searchInput: '',
+    isProductModalOpen: false,
+    focusedProduct: null
 }
 
 interface CartItem {
@@ -51,17 +55,29 @@ export const webshopSlice = createSlice({
             if(existingCartItem) existingCartItem.quantity += 1;
             else state.cart.push({id: action.payload, quantity: 1});
             console.log(JSON.parse(JSON.stringify(state.cart)));  
+        },
+        setIsProductModalOpen: (state, action: PayloadAction<boolean>) => {
+            state.isProductModalOpen = action.payload
+            console.log(state.isProductModalOpen);
+        },
+        setFocusedProduct: (state, action: PayloadAction<ClothingProduct>) => {
+            state.focusedProduct = action.payload;
+            console.log(state.focusedProduct);
+            
         }
     }
 });
 
-export const {setSearchInput, filterProducts, addToCart} = webshopSlice.actions;
+// Reducer actions
+export const {setSearchInput, filterProducts, addToCart, setIsProductModalOpen, setFocusedProduct} = webshopSlice.actions;
 
 // Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
 export const selectFilteredProducts = (state: RootState) => state.webshop.filteredProducts;
 export const selectCart = (state: RootState) => state.webshop.cart;
 export const selectProducts = (state: RootState) => state.webshop.products;
+export const selectIsProductModalOpen = (state: RootState) => state.webshop.isProductModalOpen;
+export const selectFocusedProduct = (state: RootState) => state.webshop.focusedProduct;
 
 // Memoized selectors, derived data
 export const selectCartItems = createSelector(
