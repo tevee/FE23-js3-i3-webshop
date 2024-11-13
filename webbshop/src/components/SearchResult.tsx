@@ -29,15 +29,17 @@ export default function SearchResult():JSX.Element {
             <h2>{filteredProducts.length > 0 ? 'Search Result:' : 'No Results'}</h2>
             {filteredProducts.map((product, i) => (
                 <div key={i} id={product.id} className="product-card border">
-                    <figure className="product-img">
+                    <figure className="product-card-img">
                         <img src={product.imgUrl}/>
                     </figure>
                     <div className="product-card-body">
-                        <h3>{product.name}</h3>
+                        <h4>{product.name}</h4>
                         <button onClick={(e) => {openProductModal(e); updateFocusedProduct(e, product)}} className="text-primary">Mer Information</button>
-                        <span className="product-price">{`${product.price} ${product.valuta}`}</span>
                     </div>
-                    <button onClick={(e) => handleAddToCart(e, product.id)}>Add to cart</button>
+                    <div className="product-card-last">
+                        <span className="product-price">{`${product.price} ${product.valuta}`}</span>
+                        <button onClick={(e) => handleAddToCart(e, product.id)}>Add to cart</button>
+                    </div>
                 </div>
             ))}
             {isProductModalOpen && <ProductModal/>}

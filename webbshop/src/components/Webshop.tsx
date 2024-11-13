@@ -9,12 +9,16 @@ import ShoppingCart from "./ShoppingCart";
 export default function Webshop():JSX.Element {
     return(
         <>
-            <h1>The Magic Store</h1>
-            <Searchbar/>
-            <div className="webshop">
-                <SearchResult/>
-                <ShoppingCart/>
-            </div>
+            <header>
+                    <h1>The Magic Store</h1>
+            </header>
+            <main>
+                <Searchbar/>
+                <div className="webshop">
+                    <SearchResult/>
+                    <ShoppingCart/>
+                </div>
+            </main>
         </>
     )
 }

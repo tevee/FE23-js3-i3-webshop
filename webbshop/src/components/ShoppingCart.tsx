@@ -27,7 +27,7 @@ export default function ShoppingCart():JSX.Element {
                         <img src={item.imgUrl}/>
                     </figure>
                     <div className="cart-item-body">
-                        <h3>{item.name}</h3>
+                        <h4>{item.name}</h4>
                         <span>{item.price} kr</span>
                         <div className="cart-item-body-quantity">
                             <button 
