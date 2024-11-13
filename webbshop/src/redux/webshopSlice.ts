@@ -11,7 +11,7 @@ interface WebshopState {
     focusedProduct: ClothingProduct | null;
 }
 
-type Cart = {
+interface Cart {
     id: string;
     quantity: number;
 }
@@ -70,12 +70,15 @@ export const webshopSlice = createSlice({
         setCartItemQuantity: (state, action: PayloadAction<CartItemSetQuantity>) => {
             const cartItem = state.cart.find((item) => item.id === action.payload.id);
             if(cartItem) cartItem.quantity = Math.max(1, cartItem.quantity + action.payload.value);
+        },
+        removeCartItem: (state, action: PayloadAction<string>) => {
+            state.cart = state.cart.filter(item => item.id !== action.payload);
         }
     }
 });
 
 // Reducer actions
-export const {setSearchInput, filterProducts, addToCart, setIsProductModalOpen, setFocusedProduct, setCartItemQuantity} = webshopSlice.actions;
+export const {setSearchInput, filterProducts, addToCart, setIsProductModalOpen, setFocusedProduct, setCartItemQuantity, removeCartItem} = webshopSlice.actions;
 
 // Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;

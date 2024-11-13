@@ -1,5 +1,5 @@
 import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectCartItems, selectCartSummary, setCartItemQuantity } from "../redux/webshopSlice";
+import { selectCartItems, selectCartSummary, setCartItemQuantity, removeCartItem } from "../redux/webshopSlice";
 
 export default function ShoppingCart():JSX.Element {
 
@@ -11,6 +11,11 @@ export default function ShoppingCart():JSX.Element {
         e.preventDefault(); 
         const value:number = Number(e.currentTarget.dataset.value);
         dispatch(setCartItemQuantity({id, value}));
+    }
+
+    const handleRemoveCartItem = (e:React.MouseEvent<HTMLButtonElement>, id:string): void => {
+        e.preventDefault();
+        dispatch(removeCartItem(id));
     }
 
     return (
@@ -41,7 +46,7 @@ export default function ShoppingCart():JSX.Element {
                         <span>Subtotal: {item.price * item.quantity} {item.valuta}</span>
                     </div>
                     <div className="cart-item-body-right">
-                        <button className="cart-item-btn-remove">
+                        <button onClick={(e) => handleRemoveCartItem(e, item.id)} className="cart-item-btn-remove">
                             <i className="bi bi-trash3"></i>
                         </button>
                     </div>
