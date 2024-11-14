@@ -5,15 +5,15 @@
 */
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectFilteredProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct } from "../redux/webshopSlice";
+import { selectFetchedProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct } from "../redux/webshopSlice";
 import ProductModal from './ProductModal';
-import { ClothingProduct } from '../types/types';
+import { Product } from '../types/types';
 
 export default function SearchResult():JSX.Element {
 
     const dispatch = useAppDispatch();
-    const filteredProducts = useAppSelector(selectFilteredProducts);
     const isProductModalOpen = useAppSelector(selectIsProductModalOpen);
+    const fetchedProducts = useAppSelector(selectFetchedProducts);
 
     const handleAddToCart = (e:React.MouseEvent<HTMLButtonElement>, productId: string): void => {
         e.preventDefault();
@@ -25,26 +25,26 @@ export default function SearchResult():JSX.Element {
         dispatch(setIsProductModalOpen(true));
     }
 
-    const updateFocusedProduct = (e:React.MouseEvent<HTMLButtonElement>, item:ClothingProduct): void => {
+    const updateFocusedProduct = (e:React.MouseEvent<HTMLButtonElement>, item: Product): void => {
         e.preventDefault();
         dispatch(setFocusedProduct(item));
     }
 
     return (
         <div className="search-result">
-            <h2>{filteredProducts.length > 0 ? 'Search Result:' : 'No Results'}</h2>
-            {filteredProducts.map((product, i) => (
-                <div key={i} id={product.id} className="product-card border">
+            <h2>{fetchedProducts && fetchedProducts.length > 0 ? 'Search Result:' : 'No Results'}</h2>
+            {fetchedProducts && fetchedProducts.map((product, i) => (
+                <div key={i} id={product.id.toString()} className="product-card border">
                     <figure className="product-card-img">
-                        <img src={product.imgUrl}/>
+                        <img src={product.images[0]}/>
                     </figure>
                     <div className="product-card-body">
-                        <h4>{product.name}</h4>
+                        <h4>{product.title}</h4>
                         <button onClick={(e) => {openProductModal(e); updateFocusedProduct(e, product)}} className="text-primary">Mer Information</button>
                     </div>
                     <div className="product-card-last">
-                        <span className="product-price">{`${product.price} ${product.valuta}`}</span>
-                        <button onClick={(e) => handleAddToCart(e, product.id)}>Add to cart</button>
+                        <span className="product-price">{`${product.price} $`}</span>
+                        <button onClick={(e) => handleAddToCart(e, product.id.toString())}>Add to cart</button>
                     </div>
                 </div>
             ))}

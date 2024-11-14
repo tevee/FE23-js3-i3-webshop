@@ -51,37 +51,38 @@ export default function ProductModal():JSX.Element {
 
   return (
     <div className="modal fade" ref={modalRef} tabIndex={-1} aria-labelledby="myModalLabel" aria-hidden="true">
-    <div className="modal-dialog modal-dialog-centered">
-      <div className="modal-content">
-        <div className="modal-header">
-          <h5 className="modal-title" id="myModalLabel">{product?.name}</h5>
-          <button
-            type="button"
-            className="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            onClick={closeProductModal}
-          ></button>
-        </div>
-        <div className="modal-body">
-          <span>Description: {product?.description}</span>
-          <span>Category: {product?.category}</span>
-          <span>Type: {product?.clothingType}</span>
-          <span>Size: {product?.size}</span>
-        </div>
-        <div className="modal-footer">
-          <span>Product ID: {product?.id}</span>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            data-bs-dismiss="modal"
-            onClick={closeProductModal}
-          >
-            Close
-          </button>
+      <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="myModalLabel">{product?.title}</h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+              onClick={closeProductModal}
+            ></button>
+          </div>
+          <div className="modal-body">
+            <span>Brand: {product?.brand}</span>
+            <span>Category: {product?.category}</span>
+            <span>Height: {product?.dimensions.height}</span>
+            <span>Width: {product?.dimensions.width}</span>
+            <span>Description: {product?.description}</span>
+          </div>
+          <div className="modal-footer">
+            <span>Product ID: {product?.id}</span>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              data-bs-dismiss="modal"
+              onClick={closeProductModal}
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   )
 }

@@ -29,7 +29,7 @@ export default function ShoppingCart():JSX.Element {
             {cartItems.map((item, i) => (
                 <div key={i} className="cart-item border">
                     <figure className="cart-item-figure">
-                        <img src={item.imgUrl}/>
+                        <img src={item.images[0]}/>
                     </figure>
                     <div className="cart-item-body">
                         <h4>{item.name}</h4>
@@ -48,7 +48,7 @@ export default function ShoppingCart():JSX.Element {
                                 <i className="bi bi-plus-lg"></i>
                             </button>
                         </div>
-                        <span>Subtotal: {item.price * item.quantity} {item.valuta}</span>
+                        <span>Subtotal: {(item.price * item.quantity).toFixed(2)} {item.valuta}</span>
                     </div>
                     <div className="cart-item-body-right">
                         <button onClick={(e) => handleRemoveCartItem(e, item.id)} className="cart-item-btn-remove">

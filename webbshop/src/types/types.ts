@@ -2,31 +2,40 @@
   Types needed for TypeScript
 */
 
-interface ClothingProduct {
-  id: string;
-  name: string;
-  category: string;
-  size: string;
-  price: string;
-  valuta: string;
-  description: string;
-  clothingType: string;
-  imgUrl: string;
-  quantity: number;
-}
-
 interface Cart {
   id: string;
   quantity: number;
 }
 
+interface Product {
+  id: number;
+  title: string;
+  description: string;
+  stock: number;
+  price: number;
+  brand: string;
+  category: string;
+  images: string[];
+  rating: number;
+  dimensions: Dimensions;
+}
+
+interface Dimensions {
+  width: number;
+  height: number;
+  depth: number;
+}
+
+interface ProductsResponse {
+  products: Product[];
+}
+
 interface WebshopState {
   cart: Cart[];
-  products: ClothingProduct[];
-  filteredProducts: ClothingProduct[];
   searchInput: string;
   isProductModalOpen: boolean;
-  focusedProduct: ClothingProduct | null;
+  focusedProduct: Product | null;
+  fetchedProducts: Product[] | null;
 }
 
 
@@ -35,7 +44,7 @@ interface CartItem {
   name: string;
   price: number;
   valuta: string;
-  imgUrl: string;
+  images: string[];
   quantity: number;
 }
 
@@ -50,10 +59,11 @@ interface CartTotalPrice {
 }
 
 export type {
-  ClothingProduct, 
   WebshopState,
   Cart,
   CartItem,
   CartItemSetQuantity,
-  CartTotalPrice
+  CartTotalPrice,
+  Product,
+  ProductsResponse
 }
