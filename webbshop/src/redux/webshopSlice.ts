@@ -5,14 +5,14 @@
 
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { WebshopState, CartItem, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse} from '../types/types';
+import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse} from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
     searchInput: '',
     isProductModalOpen: false,
     focusedProduct: null,
-    fetchedProducts: null
+    fetchedProducts: []
 }
 
 export const webshopSlice = createSlice({
@@ -20,10 +20,10 @@ export const webshopSlice = createSlice({
     initialState,
     reducers: {
         setSearchInput: (state, action: PayloadAction<string>) => {state.searchInput = action.payload},
-        addToCart: (state, action: PayloadAction<string>) => {
-            const existingCartItem = state.cart.find((item) => item.id === action.payload);
+        addToCart: (state, action: PayloadAction<Product>) => {
+            const existingCartItem = state.cart.find((item) => item.details.id === action.payload.id);
             if(existingCartItem) existingCartItem.quantity += 1;
-            else state.cart.push({id: action.payload, quantity: 1});
+            else state.cart.push({details: action.payload, quantity: 1});
             console.log(JSON.parse(JSON.stringify(state.cart)));  
         },
         setIsProductModalOpen: (state, action: PayloadAction<boolean>) => {
@@ -33,11 +33,11 @@ export const webshopSlice = createSlice({
             state.focusedProduct = action.payload;
         },
         setCartItemQuantity: (state, action: PayloadAction<CartItemSetQuantity>) => {
-            const cartItem = state.cart.find((item) => item.id === action.payload.id);
+            const cartItem = state.cart.find((item) => item.details.id.toString() === action.payload.id);
             if(cartItem) cartItem.quantity = Math.max(1, cartItem.quantity + action.payload.value);
         },
         removeCartItem: (state, action: PayloadAction<string>) => {
-            state.cart = state.cart.filter(item => item.id !== action.payload);
+            state.cart = state.cart.filter(item => item.details.id.toString() !== action.payload);
         }
     },
     extraReducers: builder => {
@@ -71,41 +71,19 @@ export const selectFocusedProduct = (state: RootState) => state.webshop.focusedP
 export const selectFetchedProducts = (state: RootState) => state.webshop.fetchedProducts;
 
 // Memoized selectors, derived data
-// Side note: 
 // Memoized selectors remembers the result of the selector
 // It keeps track of state changes and
 // It also recomputes data accord to dependency (state) changes
-export const selectCartItems = createSelector(
-    [selectFetchedProducts, selectCart], 
-    (products, cart): CartItem[] => {
-        if(!products) return [];
-        const itemMap = products.reduce<{[key: string]: Product}>((acc, item) => {
-            acc[item.id] = item;
-            return acc;
-        }, {})
-
-        return cart.map(cartItem => {
-            if(!itemMap[cartItem.id]) return null;
-            return {
-                id: itemMap[cartItem.id].id.toString(),
-                name: itemMap[cartItem.id].title,
-                price: itemMap[cartItem.id].price,
-                valuta: '$',
-                images: itemMap[cartItem.id].images,
-                quantity: cartItem.quantity
-            }
-        }) as CartItem[];
-});
-
 export const selectCartSummary = createSelector(
-    [selectCartItems],
+    [selectCart],
     (cartItems): CartTotalPrice => {
         if(!cartItems || cartItems.length === 0) {
             return {totalPrice: 0, valuta: '$'};
         }
+        console.log(cartItems);
 
         return cartItems.reduce<CartTotalPrice>((acc, item) => {
-            acc.totalPrice = Math.round((acc.totalPrice + item.price * item.quantity) * 100) / 100;
+            acc.totalPrice = Math.round((acc.totalPrice + item.details.price * item.quantity) * 100) / 100;
             return acc;
         }, {totalPrice: 0, valuta: '$'});
     }

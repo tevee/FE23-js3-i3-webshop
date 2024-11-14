@@ -15,9 +15,9 @@ export default function SearchResult():JSX.Element {
     const isProductModalOpen = useAppSelector(selectIsProductModalOpen);
     const fetchedProducts = useAppSelector(selectFetchedProducts);
 
-    const handleAddToCart = (e:React.MouseEvent<HTMLButtonElement>, productId: string): void => {
+    const handleAddToCart = (e:React.MouseEvent<HTMLButtonElement>, item: Product): void => {
         e.preventDefault();
-        dispatch(addToCart(productId))
+        dispatch(addToCart(item))
     }
 
     const openProductModal = (e:React.MouseEvent<HTMLButtonElement>): void => {
@@ -44,7 +44,7 @@ export default function SearchResult():JSX.Element {
                     </div>
                     <div className="product-card-last">
                         <span className="product-price">{`${product.price} $`}</span>
-                        <button onClick={(e) => handleAddToCart(e, product.id.toString())}>Add to cart</button>
+                        <button onClick={(e) => handleAddToCart(e, product)}>Add to cart</button>
                     </div>
                 </div>
             ))}

@@ -2,9 +2,12 @@
   Types needed for TypeScript
 */
 
-interface Cart {
-  id: string;
-  quantity: number;
+interface WebshopState {
+  cart: Cart[];
+  searchInput: string;
+  isProductModalOpen: boolean;
+  focusedProduct: Product | null;
+  fetchedProducts: Product[] | null;
 }
 
 interface Product {
@@ -30,14 +33,10 @@ interface ProductsResponse {
   products: Product[];
 }
 
-interface WebshopState {
-  cart: Cart[];
-  searchInput: string;
-  isProductModalOpen: boolean;
-  focusedProduct: Product | null;
-  fetchedProducts: Product[] | null;
+interface Cart {
+  details: Product;
+  quantity: number;
 }
-
 
 interface CartItem {
   id: string;

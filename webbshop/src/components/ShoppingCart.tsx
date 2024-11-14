@@ -4,12 +4,12 @@
 */
 
 import { useAppSelector, useAppDispatch } from "../app/hooks";
-import { selectCartItems, selectCartSummary, setCartItemQuantity, removeCartItem } from "../redux/webshopSlice";
+import { selectCart, selectCartSummary, setCartItemQuantity, removeCartItem } from "../redux/webshopSlice";
 
 export default function ShoppingCart():JSX.Element {
 
     const dispatch = useAppDispatch();
-    const cartItems = useAppSelector(selectCartItems);
+    const cart = useAppSelector(selectCart);
     const {totalPrice, valuta} = useAppSelector(selectCartSummary);
 
     const setQuantity = (e:React.MouseEvent<HTMLButtonElement>, id:string): void => {
@@ -26,17 +26,17 @@ export default function ShoppingCart():JSX.Element {
     return (
         <div className="cart">
             <h2>Shopping Cart</h2>
-            {cartItems.map((item, i) => (
+            {cart.map((item, i) => (
                 <div key={i} className="cart-item border">
                     <figure className="cart-item-figure">
-                        <img src={item.images[0]}/>
+                        <img src={item.details.images[0]}/>
                     </figure>
                     <div className="cart-item-body">
-                        <h4>{item.name}</h4>
-                        <span>{item.price} kr</span>
+                        <h4>{item.details.title}</h4>
+                        <span>{item.details.price} $</span>
                         <div className="cart-item-body-quantity">
                             <button 
-                                onClick={(e) => setQuantity(e, item.id)}
+                                onClick={(e) => setQuantity(e, item.details.id.toString())}
                                 data-value={-1}
                                 data-quantity={item.quantity}
                                 disabled={item.quantity <= 1}
@@ -44,21 +44,21 @@ export default function ShoppingCart():JSX.Element {
                                 <i className="bi bi-dash-lg"></i>
                             </button>
                             <span>{item.quantity}</span>
-                            <button onClick={(e) => setQuantity(e, item.id)} data-value={1}>
+                            <button onClick={(e) => setQuantity(e, item.details.id.toString())} data-value={1}>
                                 <i className="bi bi-plus-lg"></i>
                             </button>
                         </div>
-                        <span>Subtotal: {(item.price * item.quantity).toFixed(2)} {item.valuta}</span>
+                        <span>Subtotal: {(item.details.price * item.quantity).toFixed(2)} $</span>
                     </div>
                     <div className="cart-item-body-right">
-                        <button onClick={(e) => handleRemoveCartItem(e, item.id)} className="cart-item-btn-remove">
+                        <button onClick={(e) => handleRemoveCartItem(e, item.details.id.toString())} className="cart-item-btn-remove">
                             <i className="bi bi-trash3"></i>
                         </button>
                     </div>
               </div>
             ))}
             {
-                cartItems.length > 0 
+                cart.length > 0 
                 ? <div className="cart-total">
                     <h3>Total Price:</h3>
                     <h3>{totalPrice} {valuta}</h3>
