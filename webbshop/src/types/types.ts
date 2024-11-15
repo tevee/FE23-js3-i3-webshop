@@ -32,7 +32,7 @@ interface Product {
   brand: string;
   category: string;
   images: string[];
-  rating: number;
+  reviews: Reviews[];
   dimensions: Dimensions;
 }
 
@@ -40,6 +40,10 @@ interface ProductsDropdown {
   id: number;
   title: string;
   images: string[];
+}
+
+interface Reviews {
+  rating: number;
 }
 
 interface Dimensions {
@@ -76,6 +80,10 @@ interface CartTotalPrice {
   valuta: string;
 }
 
+interface RatingsMap {
+  [id: number]: number;
+}
+
 export type {
   WebshopState,
   Cart,
@@ -85,4 +93,5 @@ export type {
   Product,
   ProductsResponse,
   ProductsDropdown,
+  RatingsMap
 }

@@ -3,9 +3,9 @@
     Handles the Webshop reducer
 */
 
-import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction, Update } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse } from '../types/types';
+import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse, RatingsMap } from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
@@ -66,20 +66,18 @@ export const webshopSlice = createSlice({
         builder.addCase(getProductsDropdown.fulfilled, (state, action: PayloadAction<Product[]>) => {
             state.fetchedProductsDropdown.status = 'succeeded';
             state.fetchedProductsDropdown.products = action.payload;
-            console.log(state.fetchedProductsDropdown.products);
         })
         builder.addCase(getProductById.fulfilled, (state, action: PayloadAction<Product>) => {
             state.fetchedProducts.status = 'succeeded';
             state.fetchedProducts.products = [action.payload];
             state.searchInput = '';
-            console.log(state.fetchedProducts.products);
         })
     }
 });
 
 // Async Thunks
 export const getProducts = createAsyncThunk<Product[], string>('webshop/getProducts', async (searchResult: string) => {
-    const productParams = 'select=id,title,description,stock,price,brand,category,images,rating,dimensions';
+    const productParams = 'select=id,title,description,stock,price,brand,category,images,reviews,dimensions';
     const refinedSearchResult = searchResult.toLowerCase().trim();
 
     const response = await fetch(`https://dummyjson.com/products/search?q=${refinedSearchResult}&limit=10&${productParams}`);
@@ -99,14 +97,13 @@ export const getProductsDropdown = createAsyncThunk<Product[], string>('webshop/
 })
 
 export const getProductById = createAsyncThunk<Product, string>('webshop/getProductById', async (id: string) => {
-    const productParams = 'select=id,title,description,stock,price,brand,category,images,rating,dimensions';
+    const productParams = 'select=id,title,description,stock,price,brand,category,images,reviews,dimensions';
 
     const response = await fetch(`https://dummyjson.com/products/${id}?${productParams}`);
     if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data: Product = await response.json();
     return data;
 })
-
 
 // Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
@@ -134,6 +131,23 @@ export const selectCartSummary = createSelector(
         }, {totalPrice: 0, valuta: '$'});
     }
 );
+
+export const selectAverageRatings = createSelector(
+    [selectFetchedProducts],
+    (fetchedProducts): RatingsMap => {
+        const ratingsMap: RatingsMap = {};
+        
+        fetchedProducts?.products?.forEach((item) => {         
+            if(item.reviews && item.reviews.length > 0) {
+                const totalRating = item.reviews.reduce((acc, review) => acc + review.rating, 0);
+                ratingsMap[item.id] = totalRating / item.reviews.length;
+            } else {
+                ratingsMap[item.id] = 0;
+            }
+        })
+        return ratingsMap;
+    }
+)
 
 // Reducer actions
 export const {

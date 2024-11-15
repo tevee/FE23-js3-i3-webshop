@@ -5,7 +5,7 @@
 */
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectFetchedProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct } from "../redux/webshopSlice";
+import { selectFetchedProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct, selectAverageRatings,  } from "../redux/webshopSlice";
 import ProductModal from './ProductModal';
 import { Product } from '../types/types';
 
@@ -14,6 +14,9 @@ export default function SearchResult():JSX.Element {
     const dispatch = useAppDispatch();
     const isProductModalOpen = useAppSelector(selectIsProductModalOpen);
     const fetchedProducts = useAppSelector(selectFetchedProducts);
+    const averageRatings = useAppSelector(selectAverageRatings);
+    console.log(averageRatings);
+    
 
     const handleAddToCart = (e:React.MouseEvent<HTMLButtonElement>, item: Product): void => {
         e.preventDefault();
@@ -40,6 +43,19 @@ export default function SearchResult():JSX.Element {
                     </figure>
                     <div className="product-card-body">
                         <h4>{product.title}</h4>
+                        <div className="product-card-rating">
+                            {Array.from({ length: 5 }, (_, index) => (
+                                <button key={index} id={`${index+1}`}>
+                                    <i className={
+                                        index < Math.round(averageRatings[product.id])
+                                        ? 'bi bi-star-fill'
+                                        : 'bi bi-star'
+                                    }
+                                    ></i>
+                                </button>
+                            ))}
+                            ({product.reviews.length})
+                        </div>
                         <button onClick={(e) => {openProductModal(e); updateFocusedProduct(e, product)}} className="text-primary">Mer Information</button>
                     </div>
                     <div className="product-card-last">
