@@ -7,7 +7,20 @@ interface WebshopState {
   searchInput: string;
   isProductModalOpen: boolean;
   focusedProduct: Product | null;
-  fetchedProducts: Product[] | null;
+  fetchedProducts: FetchedProducts;
+  fetchedProductsDropdown: FetchedProductsDropdown;
+}
+
+interface FetchedProducts {
+  products: Product[] | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'; 
+  error: string | null;
+}
+
+interface FetchedProductsDropdown {
+  products: ProductsDropdown[] | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'; 
+  error: string | null;
 }
 
 interface Product {
@@ -21,6 +34,12 @@ interface Product {
   images: string[];
   rating: number;
   dimensions: Dimensions;
+}
+
+interface ProductsDropdown {
+  id: number;
+  title: string;
+  images: string[];
 }
 
 interface Dimensions {
@@ -38,14 +57,14 @@ interface Cart {
   quantity: number;
 }
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  valuta: string;
-  images: string[];
-  quantity: number;
-}
+// interface CartItem {
+//   id: string;
+//   name: string;
+//   price: number;
+//   valuta: string;
+//   images: string[];
+//   quantity: number;
+// }
 
 interface CartItemSetQuantity {
   id: string;
@@ -60,9 +79,10 @@ interface CartTotalPrice {
 export type {
   WebshopState,
   Cart,
-  CartItem,
+  // CartItem,
   CartItemSetQuantity,
   CartTotalPrice,
   Product,
-  ProductsResponse
+  ProductsResponse,
+  ProductsDropdown,
 }

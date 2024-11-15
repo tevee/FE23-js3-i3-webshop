@@ -26,10 +26,10 @@ export default function ShoppingCart():JSX.Element {
     return (
         <div className="cart">
             <h2>Shopping Cart</h2>
-            {cart.map((item, i) => (
-                <div key={i} className="cart-item border">
+            {cart.map(item => (
+                <div key={item.details.id} className="cart-item border">
                     <figure className="cart-item-figure">
-                        <img src={item.details.images[0]}/>
+                        <img src={item.details.images[0]} alt={item.details.title}/>
                     </figure>
                     <div className="cart-item-body">
                         <h4>{item.details.title}</h4>

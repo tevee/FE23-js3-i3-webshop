@@ -5,14 +5,23 @@
 
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse} from '../types/types';
+import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse } from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
     searchInput: '',
     isProductModalOpen: false,
     focusedProduct: null,
-    fetchedProducts: []
+    fetchedProducts: {
+        products: [],
+        status: 'idle',
+        error: '',
+    },
+    fetchedProductsDropdown: {
+        products: [],
+        status: 'idle',
+        error: '',
+    },
 }
 
 export const webshopSlice = createSlice({
@@ -38,13 +47,32 @@ export const webshopSlice = createSlice({
         },
         removeCartItem: (state, action: PayloadAction<string>) => {
             state.cart = state.cart.filter(item => item.details.id.toString() !== action.payload);
+        },
+        clearFetchedProductsDropdownState: (state) => {
+            state.fetchedProductsDropdown.status = 'idle';
+            state.fetchedProductsDropdown.products = null;
+        },
+        clearSearchInput: (state) => {
+            state.searchInput = '';
         }
     },
     extraReducers: builder => {
         builder.addCase(getProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-            state.fetchedProducts = action.payload;
+            state.fetchedProducts.status = 'succeeded';
+            state.fetchedProducts.products = action.payload;
             state.searchInput = '';
-            console.log(state.fetchedProducts);
+            console.log(state.fetchedProducts.products);
+        });
+        builder.addCase(getProductsDropdown.fulfilled, (state, action: PayloadAction<Product[]>) => {
+            state.fetchedProductsDropdown.status = 'succeeded';
+            state.fetchedProductsDropdown.products = action.payload;
+            console.log(state.fetchedProductsDropdown.products);
+        })
+        builder.addCase(getProductById.fulfilled, (state, action: PayloadAction<Product>) => {
+            state.fetchedProducts.status = 'succeeded';
+            state.fetchedProducts.products = [action.payload];
+            state.searchInput = '';
+            console.log(state.fetchedProducts.products);
         })
     }
 });
@@ -60,8 +88,25 @@ export const getProducts = createAsyncThunk<Product[], string>('webshop/getProdu
     return data.products;
 })
 
-// Reducer actions
-export const {setSearchInput, addToCart, setIsProductModalOpen, setFocusedProduct, setCartItemQuantity, removeCartItem} = webshopSlice.actions;
+export const getProductsDropdown = createAsyncThunk<Product[], string>('webshop/getProductsDropdown', async (searchResult: string) => {
+    const productParams = 'select=id,title,images';
+    const refinedSearchResult = searchResult.toLowerCase().trim();
+
+    const response = await fetch(`https://dummyjson.com/products/search?q=${refinedSearchResult}&limit=3&${productParams}`);
+    if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data: ProductsResponse = await response.json();
+    return data.products;
+})
+
+export const getProductById = createAsyncThunk<Product, string>('webshop/getProductById', async (id: string) => {
+    const productParams = 'select=id,title,description,stock,price,brand,category,images,rating,dimensions';
+
+    const response = await fetch(`https://dummyjson.com/products/${id}?${productParams}`);
+    if(!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data: Product = await response.json();
+    return data;
+})
+
 
 // Raw data selectors
 export const selectSearchInput = (state: RootState) => state.webshop.searchInput;
@@ -69,6 +114,7 @@ export const selectCart = (state: RootState) => state.webshop.cart;
 export const selectIsProductModalOpen = (state: RootState) => state.webshop.isProductModalOpen;
 export const selectFocusedProduct = (state: RootState) => state.webshop.focusedProduct;
 export const selectFetchedProducts = (state: RootState) => state.webshop.fetchedProducts;
+export const selectFetchedProductsDropdown = (state: RootState) => state.webshop.fetchedProductsDropdown;
 
 // Memoized selectors, derived data
 // Memoized selectors remembers the result of the selector
@@ -81,12 +127,23 @@ export const selectCartSummary = createSelector(
             return {totalPrice: 0, valuta: '$'};
         }
         console.log(cartItems);
-
+        
         return cartItems.reduce<CartTotalPrice>((acc, item) => {
             acc.totalPrice = Math.round((acc.totalPrice + item.details.price * item.quantity) * 100) / 100;
             return acc;
         }, {totalPrice: 0, valuta: '$'});
     }
 );
+
+// Reducer actions
+export const {
+    setSearchInput,
+    addToCart,
+    setIsProductModalOpen,
+    setFocusedProduct, setCartItemQuantity,
+    removeCartItem,
+    clearFetchedProductsDropdownState,
+    clearSearchInput,
+} = webshopSlice.actions;
 
 export default webshopSlice.reducer;

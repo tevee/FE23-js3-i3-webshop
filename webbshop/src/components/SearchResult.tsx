@@ -32,11 +32,11 @@ export default function SearchResult():JSX.Element {
 
     return (
         <div className="search-result">
-            <h2>{fetchedProducts && fetchedProducts.length > 0 ? 'Search Result:' : 'No Results'}</h2>
-            {fetchedProducts && fetchedProducts.map((product, i) => (
-                <div key={i} id={product.id.toString()} className="product-card border">
+            <h2>{fetchedProducts.products && fetchedProducts.products.length > 0 ? 'Search Result:' : 'No Results, try searching for e.g samsung, iphone, laptop...'}</h2>
+            {fetchedProducts.products && fetchedProducts.products.map(product => (
+                <div key={product.id} id={product.id.toString()} className="product-card border">
                     <figure className="product-card-img">
-                        <img src={product.images[0]}/>
+                        <img src={product.images[0]} alt={product.title}/>
                     </figure>
                     <div className="product-card-body">
                         <h4>{product.title}</h4>
