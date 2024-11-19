@@ -5,7 +5,16 @@
 
 import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse, RatingsMap, RatedProducts, UpdatedReviewsMap } from '../types/types';
+import { 
+    WebshopState, 
+    CartItemSetQuantity, 
+    CartTotalPrice, 
+    Product, 
+    ProductsResponse, 
+    RatingsMap, 
+    RatedProducts, 
+    UpdatedReviewsMap
+} from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
@@ -34,7 +43,6 @@ export const webshopSlice = createSlice({
             const existingCartItem = state.cart.find((item) => item.details.id === action.payload.id);
             if(existingCartItem) existingCartItem.quantity += 1;
             else state.cart.push({details: action.payload, quantity: 1});
-            console.log(JSON.parse(JSON.stringify(state.cart)));  
         },
         setIsProductModalOpen: (state, action: PayloadAction<boolean>) => {
             state.isProductModalOpen = action.payload
@@ -57,9 +65,7 @@ export const webshopSlice = createSlice({
             state.searchInput = '';
         },
         setProductRating: (state, action: PayloadAction<RatedProducts>) => {
-            Object.assign(state.ratedProducts, action.payload)
-            console.log(JSON.parse(JSON.stringify(state.ratedProducts)));
-            
+            Object.assign(state.ratedProducts, action.payload);
         }
     },
     extraReducers: builder => {
@@ -67,7 +73,6 @@ export const webshopSlice = createSlice({
             state.fetchedProducts.status = 'succeeded';
             state.fetchedProducts.products = action.payload;
             state.searchInput = '';
-            console.log(state.fetchedProducts.products);
         });
         builder.addCase(getProductsDropdown.fulfilled, (state, action: PayloadAction<Product[]>) => {
             state.fetchedProductsDropdown.status = 'succeeded';
@@ -130,8 +135,7 @@ export const selectCartSummary = createSelector(
         if(!cartItems || cartItems.length === 0) {
             return {totalPrice: 0, valuta: '$'};
         }
-        console.log(cartItems);
-        
+
         return cartItems.reduce<CartTotalPrice>((acc, item) => {
             acc.totalPrice = Math.round((acc.totalPrice + item.details.price * item.quantity) * 100) / 100;
             return acc;

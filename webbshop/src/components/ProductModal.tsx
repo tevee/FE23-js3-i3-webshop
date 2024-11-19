@@ -33,11 +33,8 @@ export default function ProductModal():JSX.Element {
       let modal = Modal.getInstance(modalElement);
       if(!modal) modal = new Modal(modalElement);
 
-      if(isProductModalOpen) {
-        modal.show();
-      } else {
-        modal.hide();
-      }
+      if(isProductModalOpen) modal.show();
+      else modal.hide();
 
       // Manually set isProductModalOpen state to false when closing modal with backdrop,
       // meaning clicking outside of the modal.
