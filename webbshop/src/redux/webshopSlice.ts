@@ -3,9 +3,9 @@
     Handles the Webshop reducer
 */
 
-import { createAsyncThunk, createSelector, createSlice, PayloadAction, Update } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse, RatingsMap } from '../types/types';
+import { WebshopState, CartItemSetQuantity, CartTotalPrice, Product, ProductsResponse, RatingsMap, RatedProducts, UpdatedReviewsMap } from '../types/types';
 
 const initialState: WebshopState = {
     cart: [],
@@ -22,6 +22,7 @@ const initialState: WebshopState = {
         status: 'idle',
         error: '',
     },
+    ratedProducts: {}
 }
 
 export const webshopSlice = createSlice({
@@ -54,6 +55,11 @@ export const webshopSlice = createSlice({
         },
         clearSearchInput: (state) => {
             state.searchInput = '';
+        },
+        setProductRating: (state, action: PayloadAction<RatedProducts>) => {
+            Object.assign(state.ratedProducts, action.payload)
+            console.log(JSON.parse(JSON.stringify(state.ratedProducts)));
+            
         }
     },
     extraReducers: builder => {
@@ -112,6 +118,7 @@ export const selectIsProductModalOpen = (state: RootState) => state.webshop.isPr
 export const selectFocusedProduct = (state: RootState) => state.webshop.focusedProduct;
 export const selectFetchedProducts = (state: RootState) => state.webshop.fetchedProducts;
 export const selectFetchedProductsDropdown = (state: RootState) => state.webshop.fetchedProductsDropdown;
+const selectRatedProducts = (state: RootState) => state.webshop.ratedProducts;
 
 // Memoized selectors, derived data
 // Memoized selectors remembers the result of the selector
@@ -133,19 +140,34 @@ export const selectCartSummary = createSelector(
 );
 
 export const selectAverageRatings = createSelector(
-    [selectFetchedProducts],
-    (fetchedProducts): RatingsMap => {
+    [selectFetchedProducts, selectRatedProducts],
+    (fetchedProducts, ratedProducts): RatingsMap => {
         const ratingsMap: RatingsMap = {};
         
         fetchedProducts?.products?.forEach((item) => {         
             if(item.reviews && item.reviews.length > 0) {
-                const totalRating = item.reviews.reduce((acc, review) => acc + review.rating, 0);
+                const userRating: number = ratedProducts[item.id];
+                const reviews = userRating ? [...item.reviews, {rating: userRating}] : item.reviews;
+                const totalRating: number = reviews.reduce((acc, review) => acc + review.rating, 0);
                 ratingsMap[item.id] = totalRating / item.reviews.length;
-            } else {
-                ratingsMap[item.id] = 0;
-            }
+            } 
+            else ratingsMap[item.id] = 0;
         })
         return ratingsMap;
+    }
+)
+
+export const selectUpdatedReviews = createSelector(
+    [selectFetchedProducts, selectRatedProducts],
+    (fetchedProducts, ratedProducts): UpdatedReviewsMap => {
+        const updatedReviewsMap: UpdatedReviewsMap = {};
+
+        fetchedProducts?.products?.forEach(item => {
+            const userRating: number = ratedProducts[item.id];
+            const updatedReviews = userRating ? [...item.reviews, {rating: userRating}] : item.reviews;
+            updatedReviewsMap[item.id] = updatedReviews;
+        })
+        return updatedReviewsMap;
     }
 )
 
@@ -158,6 +180,7 @@ export const {
     removeCartItem,
     clearFetchedProductsDropdownState,
     clearSearchInput,
+    setProductRating
 } = webshopSlice.actions;
 
 export default webshopSlice.reducer;

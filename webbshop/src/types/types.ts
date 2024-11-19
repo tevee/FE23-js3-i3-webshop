@@ -9,6 +9,7 @@ interface WebshopState {
   focusedProduct: Product | null;
   fetchedProducts: FetchedProducts;
   fetchedProductsDropdown: FetchedProductsDropdown;
+  ratedProducts: RatedProducts;
 }
 
 interface FetchedProducts {
@@ -84,6 +85,14 @@ interface RatingsMap {
   [id: number]: number;
 }
 
+interface RatedProducts {
+  [id: number]: number;
+}
+
+interface UpdatedReviewsMap {
+  [id: number]: Reviews[];
+}
+
 export type {
   WebshopState,
   Cart,
@@ -93,5 +102,7 @@ export type {
   Product,
   ProductsResponse,
   ProductsDropdown,
-  RatingsMap
+  RatingsMap,
+  RatedProducts,
+  UpdatedReviewsMap
 }

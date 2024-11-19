@@ -5,7 +5,16 @@
 */
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectFetchedProducts, addToCart, selectIsProductModalOpen, setIsProductModalOpen, setFocusedProduct, selectAverageRatings,  } from "../redux/webshopSlice";
+import { 
+    selectFetchedProducts, 
+    addToCart, 
+    selectIsProductModalOpen, 
+    setIsProductModalOpen, 
+    setFocusedProduct, 
+    selectAverageRatings, 
+    setProductRating,
+    selectUpdatedReviews
+} from "../redux/webshopSlice";
 import ProductModal from './ProductModal';
 import { Product } from '../types/types';
 
@@ -15,8 +24,7 @@ export default function SearchResult():JSX.Element {
     const isProductModalOpen = useAppSelector(selectIsProductModalOpen);
     const fetchedProducts = useAppSelector(selectFetchedProducts);
     const averageRatings = useAppSelector(selectAverageRatings);
-    console.log(averageRatings);
-    
+    const updatedReviews = useAppSelector(selectUpdatedReviews);
 
     const handleAddToCart = (e:React.MouseEvent<HTMLButtonElement>, item: Product): void => {
         e.preventDefault();
@@ -33,6 +41,12 @@ export default function SearchResult():JSX.Element {
         dispatch(setFocusedProduct(item));
     }
 
+    const addRating = (e:React.MouseEvent<HTMLButtonElement>, itemId: number) => {
+        e.preventDefault();
+        const productRating = Number(e.currentTarget.id);
+        dispatch(setProductRating({[itemId]: productRating}));
+    }
+
     return (
         <div className="search-result">
             <h2>{fetchedProducts.products && fetchedProducts.products.length > 0 ? 'Search Result:' : 'No Results, try searching for e.g samsung, iphone, laptop...'}</h2>
@@ -45,7 +59,7 @@ export default function SearchResult():JSX.Element {
                         <h4>{product.title}</h4>
                         <div className="product-card-rating">
                             {Array.from({ length: 5 }, (_, index) => (
-                                <button key={index} id={`${index+1}`}>
+                                <button key={index} id={`${index+1}`} onClick={(e) => addRating(e, product.id)}>
                                     <i className={
                                         index < Math.round(averageRatings[product.id])
                                         ? 'bi bi-star-fill'
@@ -54,7 +68,7 @@ export default function SearchResult():JSX.Element {
                                     ></i>
                                 </button>
                             ))}
-                            ({product.reviews.length})
+                            ({updatedReviews[product.id].length})
                         </div>
                         <button onClick={(e) => {openProductModal(e); updateFocusedProduct(e, product)}} className="text-primary">Mer Information</button>
                     </div>
